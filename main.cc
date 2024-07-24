@@ -245,7 +245,9 @@ void cornell_box(int width, int sample_per_pixel)
     auto red = make_shared<lambertian>(color(.65, .05, .05));
     auto white = make_shared<lambertian>(color(.73, .73, .73));
     auto green = make_shared<lambertian>(color(.12, .45, .15));
-    auto light = make_shared<diffuse_light>(color(15, 15, 15));
+    auto light = make_shared<diffuse_light>(color(12, 12, 12));
+    auto glass = make_shared<dielectric>(1.5);
+    auto mirror = make_shared<metal>(vec3(1, 1, 1), 0);
 
     world.add(make_shared<quad>(vec3(555, 0, 0), vec3(0, 555, 0), vec3(0, 0, 555), green));
     world.add(make_shared<quad>(vec3(0, 0, 0), vec3(0, 555, 0), vec3(0, 0, 555), red));
@@ -263,6 +265,13 @@ void cornell_box(int width, int sample_per_pixel)
     box2 = make_shared<rotate_y>(box2, -18);
     box2 = make_shared<translate>(box2, vec3(130, 0, 65));
     world.add(box2);
+
+    shared_ptr<hittable> sphere1 = make_shared<sphere>(vec3(0, 0, 0), 45, mirror);
+    sphere1 = make_shared<translate>(sphere1, vec3(180, 210, 140));
+    shared_ptr<hittable> sphere2 = make_shared<sphere>(vec3(0, 0, 0), 75, glass);
+    sphere2 = make_shared<translate>(sphere2, vec3(420, 75, 100));
+    world.add(sphere1);
+    world.add(sphere2);
 
     camera cam;
 
@@ -347,7 +356,7 @@ int main()
         simple_light(400, 100);
         break;
     case 6:
-        cornell_box(600, 1000);
+        cornell_box(400, 5000);
         break;
     case 7:
         cornell_smoke(400, 1000);
